@@ -41,18 +41,18 @@
   </div>
 
   <!-- Canvas for the game -->
-  <canvas id="tetris" width="300" height="660"></canvas> <!-- Adjusted height -->
+  <canvas id="tetris" width="300" height="630"></canvas> <!-- Adjusted height for score space -->
 
   <script>
     const canvas = document.getElementById("tetris");
     const ctx = canvas.getContext("2d");
 
     const COLS = 10;
-    const ROWS = 20;
+    const ROWS = 20;  // Total number of rows in the game
     const BLOCK_SIZE = 30;
+    const SCORE_HEIGHT = 30;  // Space for score at the top
     const BOARD_WIDTH = COLS * BLOCK_SIZE;
-    const BOARD_HEIGHT = ROWS * BLOCK_SIZE;
-    const SCORE_HEIGHT = 30; // Space for the score display
+    const BOARD_HEIGHT = ROWS * BLOCK_SIZE;  // Full height of the grid (without score space)
     const colors = ['#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'];
 
     // Initialize the board
@@ -97,7 +97,6 @@
     let lastTime = 0;
     let fallSpeed = 1000;
     let dropTime = 0;
-    let linesCleared = 0;
     let score = 0;
 
     function generateTetromino() {
@@ -107,7 +106,7 @@
 
     function drawBlock(x, y, color) {
       ctx.fillStyle = color;
-      ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE + SCORE_HEIGHT, BLOCK_SIZE, BLOCK_SIZE); // Adjust for score height
+      ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE + SCORE_HEIGHT, BLOCK_SIZE, BLOCK_SIZE); // Adjusted for score height
       ctx.strokeStyle = '#fff';
       ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE + SCORE_HEIGHT, BLOCK_SIZE, BLOCK_SIZE);
     }
@@ -115,12 +114,12 @@
     function drawBoard() {
       ctx.clearRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT + SCORE_HEIGHT);
 
-      // Draw score
+      // Draw score at the top
       ctx.fillStyle = 'white';
       ctx.font = '20px Arial';
       ctx.fillText(`Score: ${score}`, 10, 25);
 
-      // Draw game board
+      // Draw game board (without the score space)
       for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
           if (board[y][x]) {
@@ -240,8 +239,8 @@
     }
 
     function restartGame() {
-      for (let row = 0; row < ROWS; row++) {
-        board[row] = Array(COLS).fill(null);
+      for (let i = 0; i < ROWS; i++) {
+        board[i] = Array(COLS).fill(null);
       }
       currentTetromino = generateTetromino();
       currentX = Math.floor(COLS / 2) - 1;
@@ -267,18 +266,19 @@
           case "ArrowDown":
             moveTetromino(0, 1);
             break;
-          case "ArrowUp":
-            while (moveTetromino(0, 1)) {}
-            break;
           case " ":
             rotateTetromino();
+            break;
+          case "ArrowUp":
+            while (moveTetromino(0, 1)) {}
             break;
         }
       }
     });
 
-    requestAnimationFrame(update);
+    restartGame();  // Start the game
   </script>
 </body>
 </html>
+
 
