@@ -112,12 +112,14 @@
     }
 
     function drawBoard() {
+      // Clear the entire canvas and redraw the score area properly
       ctx.clearRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT + SCORE_HEIGHT);
 
-      // Draw score at the top
+      // Draw score at the top (centered)
       ctx.fillStyle = 'white';
       ctx.font = '20px Arial';
-      ctx.fillText(`Score: ${score}`, 10, 25);
+      ctx.textAlign = 'center';
+      ctx.fillText(`Score: ${score}`, canvas.width / 2, 25);
 
       // Draw game board (without the score space)
       for (let y = 0; y < ROWS; y++) {
@@ -239,8 +241,9 @@
     }
 
     function restartGame() {
-      for (let i = 0; i < ROWS; i++) {
-        board[i] = Array(COLS).fill(null);
+      // Reset the board and variables, but leave the score area intact
+      for (let y = 0; y < ROWS; y++) {
+        board[y].fill(null);
       }
       currentTetromino = generateTetromino();
       currentX = Math.floor(COLS / 2) - 1;
